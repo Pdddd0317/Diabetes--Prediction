@@ -24,10 +24,8 @@ METRICS_PATH = MODELS_DIR / "metrics.json"
 @st.cache_resource(show_spinner=False)
 def load_models():
     """加载已训练好的线性回归与随机森林模型。"""
-codex/create-diabetes-prediction-web-app-joavct
     lr_path = MODELS_DIR / "linear_regression_model.joblib"
     rf_path = MODELS_DIR / "random_forest_model.joblib"
-
     if not lr_path.exists() or not rf_path.exists():
         st.error("未找到模型文件，请先运行 train_model.py 生成模型。")
         st.stop()
@@ -52,6 +50,22 @@ def load_dataset_stats():
     data = load_diabetes()
     df = pd.DataFrame(data.data, columns=data.feature_names)
     return data.feature_names, df.mean().to_dict()
+
+
+def feature_descriptions() -> Dict[str, str]:
+    """为初学者提供特征的简要中文释义。"""
+    return {
+        "age": "年龄标准化值（年，已中心化/缩放）",
+        "sex": "性别编码（标准化后的类别）",
+        "bmi": "体质指数 BMI（标准化）",
+        "bp": "平均血压（标准化）",
+        "s1": "血清总胆固醇（标准化）",
+        "s2": "低密度脂蛋白 LDL（标准化）",
+        "s3": "高密度脂蛋白 HDL（标准化）",
+        "s4": "血清甘油三酯（标准化）",
+        "s5": "血糖水平（标准化）",
+        "s6": "血清胰岛素（标准化）",
+    }
 
 
 def build_feature_inputs(feature_names: List[str], default_values: Dict[str, float]):
@@ -93,10 +107,16 @@ def main():
     metrics = load_metrics()
     lr_metrics = metrics.get("linear_regression", {})
     rf_metrics = metrics.get("random_forest", {})
+    metadata = metrics.get("metadata", {})
     st.sidebar.metric("线性回归 MSE", f"{lr_metrics.get('mse', 0):.2f}")
     st.sidebar.metric("线性回归 R²", f"{lr_metrics.get('r2', 0):.2f}")
     st.sidebar.metric("随机森林 MSE", f"{rf_metrics.get('mse', 0):.2f}")
     st.sidebar.metric("随机森林 R²", f"{rf_metrics.get('r2', 0):.2f}")
+    if metadata:
+        st.sidebar.caption(
+            f"模型训练时间：{metadata.get('trained_at', '未知')}\n"
+            f"备注：{metadata.get('note', '')}"
+        )
 
     # 主区域布局
     left, right = st.columns([1.1, 0.9])
@@ -105,6 +125,11 @@ def main():
         st.subheader("输入特征并进行预测")
         feature_names, defaults = load_dataset_stats()
         user_inputs = build_feature_inputs(feature_names, defaults)
+
+        with st.expander("特征释义（标准化后的数值）", expanded=False):
+            desc = feature_descriptions()
+            for name in feature_names:
+                st.markdown(f"- **{name}**：{desc.get(name, '标准化数值')}" )
 
         model_options = ["线性回归", "随机森林回归"]
         selected_model_name = st.selectbox("选择预测模型", model_options)

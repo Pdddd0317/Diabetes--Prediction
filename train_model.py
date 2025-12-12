@@ -7,6 +7,7 @@
 """
 
 import json
+from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -17,6 +18,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 
 # 定义输出目录，Path 对象便于跨平台路径处理
@@ -47,8 +50,13 @@ def train_and_evaluate(X: np.ndarray, y: np.ndarray, feature_names: list[str]):
         X, y, test_size=0.2, random_state=42
     )
 
-    # 训练线性回归模型
-    lr_model = LinearRegression()
+    # 训练线性回归模型，配合标准化以获得更稳定的系数
+    lr_model = Pipeline(
+        [
+            ("scaler", StandardScaler()),
+            ("model", LinearRegression()),
+        ]
+    )
     lr_model.fit(X_train, y_train)
 
     # 训练随机森林回归模型
@@ -72,6 +80,10 @@ def train_and_evaluate(X: np.ndarray, y: np.ndarray, feature_names: list[str]):
             "r2": r2_score(y_test, rf_preds),
         },
         "feature_names": feature_names,
+        "metadata": {
+            "trained_at": datetime.now().isoformat(timespec="seconds"),
+            "note": "线性回归使用StandardScaler进行特征标准化，随机森林保持原始特征。",
+        },
     }
 
     print("特征名称:", feature_names)
@@ -123,10 +135,8 @@ def plot_feature_importance(model: RandomForestRegressor, feature_names: list[st
 
 def save_models(lr_model: LinearRegression, rf_model: RandomForestRegressor) -> None:
     """保存训练好的模型以供后续加载。"""
-codex/create-diabetes-prediction-web-app-joavct
     dump(lr_model, MODELS_DIR / "linear_regression_model.joblib")
     dump(rf_model, MODELS_DIR / "random_forest_model.joblib")
-
 
 
 def save_metrics(metrics: dict) -> None:
