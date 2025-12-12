@@ -18,7 +18,7 @@ from sklearn.datasets import load_diabetes
 # 常量路径定义
 MODELS_DIR = Path("models")
 FIGURES_DIR = Path("figures")
-METRICS_PATH = Path("metrics.json")
+METRICS_PATH = MODELS_DIR / "metrics.json"
 
 
 @st.cache_resource(show_spinner=False)
@@ -119,7 +119,7 @@ def main():
 
     with right:
         st.subheader("训练阶段的可视化")
-        pred_img = FIGURES_DIR / "rf_predictions.png"
+        pred_img = FIGURES_DIR / "rf_true_vs_pred.png"
         imp_img = FIGURES_DIR / "rf_feature_importance.png"
 
         if pred_img.exists():

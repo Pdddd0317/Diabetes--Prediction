@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 # 定义输出目录，Path 对象便于跨平台路径处理
 MODELS_DIR = Path("models")
 FIGURES_DIR = Path("figures")
-METRICS_PATH = Path("metrics.json")
+METRICS_PATH = MODELS_DIR / "metrics.json"
 
 
 def ensure_dirs() -> None:
@@ -95,7 +95,7 @@ def plot_predictions(y_true: np.ndarray, y_pred: np.ndarray) -> Path:
     plt.ylabel("预测值")
     plt.title("随机森林预测 vs 真实值")
     plt.tight_layout()
-    output_path = FIGURES_DIR / "rf_predictions.png"
+    output_path = FIGURES_DIR / "rf_true_vs_pred.png"
     plt.savefig(output_path, dpi=300)
     plt.close()
     return output_path
