@@ -123,8 +123,8 @@ def plot_feature_importance(model: RandomForestRegressor, feature_names: list[st
 
 def save_models(lr_model: LinearRegression, rf_model: RandomForestRegressor) -> None:
     """保存训练好的模型以供后续加载。"""
-    dump(lr_model, MODELS_DIR / "linear_regression.joblib")
-    dump(rf_model, MODELS_DIR / "random_forest.joblib")
+    dump(lr_model, MODELS_DIR / "linear_regression_model.joblib")
+    dump(rf_model, MODELS_DIR / "random_forest_model.joblib")
 
 
 def save_metrics(metrics: dict) -> None:
