@@ -4,6 +4,7 @@
 
 ## 文件结构
 - `requirements.txt`：项目依赖列表。
+codex/create-diabetes-prediction-web-app-nmmqwb
 - `train_model.py`：训练线性回归与随机森林模型、评估并保存可视化（线性回归已加入 StandardScaler 标准化流水线以获得更稳定的系数）。
 - `app.py`：Streamlit 网页应用，支持在线输入特征并预测，同时展示训练时间元数据与特征释义。
 - `models/`：存放训练好的模型（运行训练脚本后生成）。
