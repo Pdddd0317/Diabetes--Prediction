@@ -24,8 +24,10 @@ METRICS_PATH = MODELS_DIR / "metrics.json"
 @st.cache_resource(show_spinner=False)
 def load_models():
     """加载已训练好的线性回归与随机森林模型。"""
-    lr_path = MODELS_DIR / "linear_regression.joblib"
-    rf_path = MODELS_DIR / "random_forest.joblib"
+codex/create-diabetes-prediction-web-app-joavct
+    lr_path = MODELS_DIR / "linear_regression_model.joblib"
+    rf_path = MODELS_DIR / "random_forest_model.joblib"
+
     if not lr_path.exists() or not rf_path.exists():
         st.error("未找到模型文件，请先运行 train_model.py 生成模型。")
         st.stop()
